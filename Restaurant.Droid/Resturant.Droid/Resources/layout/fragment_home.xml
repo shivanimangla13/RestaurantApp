@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:layout_weight="3"
+android:background="@color/white">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_below="@+id/rl1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="53dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/ll1"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="vertical"
+                    android:gravity="end">
+
+                    <Refractored.Controls.CircleImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/profile_image"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@drawable/splashicon"
+                        app:civ_border_width=".5dp"
+                        app:civ_border_color="@color/white"/>
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll2"
+                    android:layout_below="@+id/ll1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    android:gravity="center|left">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:gravity="center|left"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Home"
+                        android:textSize="22sp"
+                        android:textColor="@color/darkGrey"
+                        android:fontFamily="@font/opensans_bold"></TextView>
+                </LinearLayout>
+              <!--  <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:id="@+id/ll3"
+                    android:layout_below="@+id/ll2"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/white"
+                    app:cardBackgroundColor="@color/white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:gravity="center|left">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_loupe"
+                            android:backgroundTint="@color/hintColor"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"></ImageView>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center|left"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:text="Search Products"
+                            android:textSize="15sp"
+                            android:textColor="@color/hintColor"
+                            android:fontFamily="@font/opensans_semibold"></TextView>
+
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:id="@+id/ll4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="10dp"
+                    android:padding="5dp"
+                    android:layout_below="@+id/ll3">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:background="@drawable/border_rounded">
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_shopByCate"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Shop By Category"
+                            android:textSize="17sp"
+                            android:textColor="@color/darkGrey"
+                            android:fontFamily="@font/opensans_semibold"></TextView>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_shopCate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="2dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_deals"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Deals of the day"
+                            android:textSize="17sp"
+                            android:textColor="@color/darkGrey"
+                            android:fontFamily="@font/opensans_semibold"></TextView>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_deals"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="2dp"
+                            android:layout_height="wrap_content">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+
+                </LinearLayout>
+-->
+
+                <LinearLayout
+                    android:layout_below="@id/ll2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <include layout="@layout/home"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+        </ScrollView>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
+</RelativeLayout>

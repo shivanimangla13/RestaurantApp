@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using com.resturant.Droid.Resturant.Config;
+using Google.Android.Material.Snackbar;
+using Newtonsoft.Json;
+
+namespace com.resturant.Droid
+{
+    [Activity(Label = "SignupActivity")]
+    public class SignupActivity : Activity
+    {
+        EditText txtName, txtEmail, txtPhoneNo, txtPassword;
+        Button btnSignup;
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            SetContentView(Resource.Layout.activity_sign_up);
+            // Create your application here
+
+            txtName = FindViewById<EditText>(Resource.Id.etName);
+            txtEmail = FindViewById<EditText>(Resource.Id.etEmail);
+            txtPhoneNo = FindViewById<EditText>(Resource.Id.etPhone);
+            txtPassword = FindViewById<EditText>(Resource.Id.etPass);
+
+            btnSignup = FindViewById<Button>(Resource.Id.btnSignUP);
+
+            btnSignup.Click += BtnSignup_Click;
+        }
+
+        private async void BtnSignup_Click(object sender, EventArgs e)
+        {
+            View view = (View)sender;
+            if (txtName.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Name is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+            if (txtEmail.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Email is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+            if (txtPhoneNo.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Phone is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+            if (txtPassword.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Password is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+
+            SignUp signUp = new SignUp()
+            {
+                name = txtName.Text,
+                email = txtEmail.Text,
+                username = txtPhoneNo.Text,
+                password = txtPassword.Text
+            };
+            try
+            {
+
+                var uri = BaseURL.SignUp;
+                var registerData = JsonConvert.SerializeObject(signUp);
+
+                using (var client = new HttpClient())
+                {
+                    var jsonContent = new StringContent(registerData, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(uri, jsonContent);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
+                        var resultString = await response.Content.ReadAsStringAsync();
+                        Snackbar.Make(view, "Sucessfull", Snackbar.LengthShort).Show();
+                        var intent = new Intent(this, typeof(LoginActivity));
+                        this.StartActivity(intent);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                Snackbar.Make(view, "Something went wrong.", Snackbar.LengthShort).Show();
+                return;
+            }
+
+        }
+    }
+}

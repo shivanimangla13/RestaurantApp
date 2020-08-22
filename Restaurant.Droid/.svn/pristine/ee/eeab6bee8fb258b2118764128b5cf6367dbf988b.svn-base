@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:background="#f7f7f9"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:layout_marginBottom="30dp"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#f4f4f4"
+            android:padding="10dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="57dp"
+                android:layout_gravity="bottom"
+                android:gravity="bottom">
+
+                <LinearLayout
+                    android:id="@+id/search_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:id="@+id/ll3"
+                        android:layout_below="@+id/ll2"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="20dp"
+                        android:background="@color/white"
+                        app:cardBackgroundColor="@color/white">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:orientation="horizontal"
+                            android:background="@color/white"
+                            android:gravity="center|left">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="10dp"
+                                android:backgroundTint="@color/lightGrey"
+                                android:background="@drawable/ic_loupe"
+                                ></ImageView>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:gravity="center|left"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:text="What are you looking for (eg.mango, onion)"
+                                android:textSize="12sp"
+                                android:fontFamily="@font/opensans_regular"
+                              ></TextView>
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <RelativeLayout
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/lens"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="8dp"
+                            android:src="@drawable/lens" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_toRightOf="@id/lens"
+                            android:gravity="top"
+                            android:layout_centerVertical="true"
+                            android:text="What are you looking for (e.g.mango, onion)"
+                            android:textColor="@color/darkGrey"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+<!--            <com.github.clans.fab.FloatingActionButton-->
+<!--                android:id="@+id/fab"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom|right"-->
+<!--                android:layout_marginBottom="8dp"-->
+<!--                android:layout_marginRight="8dp"-->
+<!--                android:src="@drawable/ic_keyboard_arrow_down_black_24dp"-->
+<!--                app:fab_colorNormal="#DA4336"-->
+<!--                app:fab_colorPressed="#E75043"-->
+<!--                app:fab_colorRipple="#99FFFFFF"-->
+<!--                app:fab_showShadow="true"-->
+<!--                app:fab_shadowColor="#66000000"-->
+<!--                app:fab_shadowRadius="4dp"-->
+<!--                app:fab_shadowXOffset="1dp"-->
+<!--                app:fab_shadowYOffset="3dp"-->
+<!--                app:fab_size="normal"-->
+<!--                app:fab_showAnimation="@anim/fab_scale_up"-->
+<!--                app:fab_hideAnimation="@anim/fab_scale_down"-->
+<!--                app:fab_label=""-->
+<!--                app:fab_progress_color="#FF009688"-->
+<!--                app:fab_progress_backgroundColor="#4D000000"-->
+<!--                app:fab_progress_indeterminate="false"-->
+<!--                app:fab_progress_max="100"-->
+<!--                app:fab_progress="0"-->
+<!--                app:fab_progress_showBackground="true"/>-->
+
+
+
+
+            <RelativeLayout
+                android:id="@+id/rrr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:visibility="visible"
+                android:layout_marginTop="5dp">
+
+
+
+
+
+                <!--                <com.daimajia.slider.library.SliderLayout-->
+                <!--                    android:id="@+id/home_img_slider"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_margin="@dimen/space_5" />-->
+
+                <!--<com.daimajia.slider.library.Indicators.PagerIndicator-->
+                <!--android:id="@+id/custom_indicator"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center" />-->
+            </RelativeLayout>
+
+
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:background="@color/white">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/map"-->
+<!--                    android:layout_width="120dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@drawable/map"/>-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_toRightOf="@+id/map"-->
+<!--                    android:layout_marginLeft="5dp"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Current Location"-->
+<!--                        android:gravity="center_horizontal"-->
+<!--                        android:textColor="@color/hintColor"/>-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/loc"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Lajpat Nagar, New Delhi"-->
+<!--                        android:gravity="center_horizontal"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="15sp"/>-->
+
+<!--                    <TextView-->
+<!--                        android:visibility="gone"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="View Today Schedule"-->
+<!--                        android:textSize="12sp"-->
+<!--                        android:layout_marginTop="5dp"-->
+<!--                        android:gravity="center_horizontal"-->
+<!--                        android:textColor="@color/black"/>-->
+<!--                </LinearLayout>-->
+<!--            </RelativeLayout>-->
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:tabMode="scrollable"
+                android:layout_marginTop="5dp"
+                app:tabTextAppearance="@style/MineCustomTabText"
+                app:tabIndicatorColor="@color/green"
+                app:tabSelectedTextColor="@color/green"
+                app:tabRippleColor="@color/color_1"
+                android:layout_below="@+id/l1_topapps"
+                app:tabTextColor="@color/black">
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/top_selling_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Top Selling"/>
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/recent_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recent"/>
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/deals_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deals of the day"/>
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/whtsnewitem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What's New"/>
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/pager_product"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="760dp"
+                android:isScrollContainer="true">
+
+            </androidx.viewpager.widget.ViewPager>
+
+            <LinearLayout
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@color/white">
+
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/relative_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp">
+
+                </com.daimajia.slider.library.SliderLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:background="#f2f0f4"
+                android:gravity="center">
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/firebase"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Shop By Category"
+                    android:textColor="#837e7e"
+                    android:textSize="14sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#ffffff"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_home"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:scrollbars="none"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:elevation="0dp">
+
+                
+            </RelativeLayout>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="55dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@color/white"
+                app:fabSize="mini"
+                android:id="@+id/fabfour"
+                android:layout_margin="4dp"
+                app:srcCompat="@drawable/call_answer"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@android:color/white"
+                app:fabSize="mini"
+                android:id="@+id/fabThree"
+                android:layout_margin="4dp"
+                app:srcCompat="@drawable/whatsapp"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@android:color/white"
+                app:fabSize="mini"
+                android:id="@+id/fabTwo"
+                android:layout_margin="4dp"
+                app:srcCompat="@drawable/reviews"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tint="@android:color/white"
+                app:fabSize="mini"
+                android:id="@+id/fabOne"
+                android:layout_margin="4dp"
+                app:srcCompat="@drawable/share_via"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="normal"
+                android:tint="@android:color/white"
+                android:layout_margin="4dp"
+                app:srcCompat="@drawable/ic_add_circle_black_24dp"
+                tools:ignore="VectorDrawableCompat" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

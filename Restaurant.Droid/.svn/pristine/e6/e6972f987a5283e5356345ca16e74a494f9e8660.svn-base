@@ -1,0 +1,155 @@
+﻿using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Support.V7.App;
+using Android.Support.V7.Widget;
+using Android.Widget;
+using com.resturant.Droid.Model;
+using com.resturant.Droid.Resturant.Adapter;
+using com.resturant.Droid.Resturant.Config;
+using com.resturant.Droid.Resturant.utils;
+using Devs.Mulham.Horizontalcalendar;
+using Java.Text;
+using Java.Util;
+using Newtonsoft.Json;
+using Org.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+
+namespace com.resturant.Droid.Resturant.Activities
+{
+    [Activity]
+    public class OrderSummary : AppCompatActivity
+    {
+        Session_management session_management;
+        string total_atm;
+        Button btn_AddAddress;
+        LinearLayout back;
+        TextView btn_Contine, txt_deliver, txtTotalItems, pPrice, pMrp, totalItms, price, DeliveryCharge, Amounttotal, txt_totalPrice;
+        string dname;
+        JSONArray array;
+        public static string cart_id;
+
+        RecyclerView recycler_itemsList;
+        public HorizontalCalendar horizontalCalendar;
+        private List<timing_model> dateDayModelClasses1;
+        Timing_Adapter bAdapter1;
+        string timeslot;
+        string addressid, totalprice;
+        string user_id;
+        ProgressDialog progressDialog;
+
+        String minVAlue, maxValue;
+        private List<CartModel> cartList = new List<CartModel>();
+        private Session_management sessionManagement;
+        List<ProcessCheckout> CheckoutList = new List<ProcessCheckout>();
+
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            SetContentView(Resource.Layout.activity_order_summary);
+            SupportActionBar.Hide();
+            //this.Window.SetFlags(Android.Views.WindowManagerFlags.Fullscreen, Android.Views.WindowManagerFlags.Fullscreen);
+            // Create your application here
+            sessionManagement = new Session_management(ApplicationContext);
+            user_id = sessionManagement.getUserDetails().Get(BaseURL.KEY_ID).ToString();
+            array = new JSONArray();
+
+            init();
+        }
+
+        private async void init()
+        {
+            session_management = new Session_management(this.ApplicationContext);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.SetMessage("Loading...");
+            progressDialog.SetCancelable(false);
+
+            sessionManagement = new Session_management(this);
+            sessionManagement.cleardatetime();
+
+            dname = Intent.GetStringExtra("dName");
+            addressid = Intent.GetStringExtra("dId");
+            btn_AddAddress = (Button)FindViewById(Resource.Id.btn_AddAddress);
+            txtTotalItems = (TextView)FindViewById(Resource.Id.txtTotalItems);
+            btn_Contine = (TextView)FindViewById(Resource.Id.btn_Contine);
+            recycler_itemsList = (RecyclerView)FindViewById(Resource.Id.recycler_itemsList);
+            //recyclerTimeSlot = (RecyclerView)FindViewById(Resource.Id.recyclerTimeSlot);
+            pPrice = (TextView)FindViewById(Resource.Id.pPrice);
+            pMrp = (TextView)FindViewById(Resource.Id.pMrp);
+            totalItms = (TextView)FindViewById(Resource.Id.totalItms);
+            price = (TextView)FindViewById(Resource.Id.price);
+            DeliveryCharge = (TextView)FindViewById(Resource.Id.DeliveryCharge);
+            Amounttotal = (TextView)FindViewById(Resource.Id.Amounttotal);
+            txt_totalPrice = (TextView)FindViewById(Resource.Id.txt_totalPrice);
+            back = (LinearLayout)FindViewById(Resource.Id.back);
+
+            totalprice = DeliveryCharge.Text.ToString() + price.Text.ToString();
+            DeliveryCharge.Text = totalprice;
+
+            Amounttotal.Text = totalprice;
+            back.Click += delegate
+              {
+                  Finish();
+              };
+
+            btn_AddAddress.Click += delegate
+            {
+                Intent In = new Intent(ApplicationContext, typeof(Add_address));
+                StartActivity(In);
+            };
+
+
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            var startDate = DateTime.Now.AddMonths(-1);
+            Date sdate = format.Parse(startDate.Date.ToShortDateString());
+
+            var endDate = DateTime.Now.AddMonths(1);
+            Date edate = format.Parse(endDate.Date.ToShortDateString());
+
+            string todaydate = sdate.ToString();
+            dateDayModelClasses1 = new List<timing_model>();
+            //horizontalCalendar = FindViewById<HorizontalCalendar>(Resource.Id.calendarView1);
+            //horizontalCalendar = new HorizontalCalendar.Builder(this, Resource.Id.calendarView1)
+            //    .StartDate(sdate)
+            //    .EndDate(edate)
+            //    .DatesNumberOnScreen(5)
+            //    .MonthFormat("MMM")
+            //    .DayNameFormat("dd")
+            //    .DayNumberFormat("EEE")
+            //    .TextSize(11f, 20f, 12f)
+            //    .TextColor(Color.Gray, Color.Black)
+            //    .Build();
+            //horizontalCalendarListner = new OnDateSelected(DateSelected);
+            sessionManagement = new Session_management(this);
+            var UserId = Convert.ToInt32(sessionManagement.getUserDetails().Get(BaseURL.KEY_ID).ToString());
+            var getCheckoutURL = new System.Uri(BaseURL.GetCheckoutList + UserId);
+            CheckoutList = new List<ProcessCheckout>();
+
+            using (var client = new HttpClient())
+            {
+                var checkoutData = await client.GetStringAsync(getCheckoutURL);
+                CheckoutList = JsonConvert.DeserializeObject<List<ProcessCheckout>>(checkoutData);
+            }
+
+            //Cart_adapter adapter = new Cart_adapter(this, CheckoutList);
+            //recycler_itemsList.SetAdapter(adapter);
+            //adapter.NotifyDataSetChanged();
+            updateData();
+        }
+
+        private void updateData()
+        {
+            var totalAmount = (from data in CheckoutList select data).Sum(x => x.SelRate * x.Quantity);
+            pPrice.Text = totalAmount.ToString("0.##");
+            price.Text = "" + totalAmount.ToString("0.##");
+            total_atm = totalAmount.ToString("0.##");
+            txt_totalPrice.Text = total_atm;
+            txtTotalItems.Text = ("" + CheckoutList.Count());
+            totalItms.Text = ("" + CheckoutList.Count() + " " + " Items");
+        }
+
+    }
+}

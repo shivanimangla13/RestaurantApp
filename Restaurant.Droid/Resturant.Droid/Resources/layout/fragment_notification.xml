@@ -1,0 +1,86 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <RelativeLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="start"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:text="My Notification"
+            android:textSize="22sp"
+            android:textColor="@color/darkGrey"
+            android:fontFamily="@font/opensans_bold"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:text="Delete All"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:id="@+id/dellete"
+            android:textSize="15dp"
+            android:textColor="@color/darkGrey"
+            android:fontFamily="@font/opensans_bold"></TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/dellete"
+            android:background="@color/lightGrey"></View>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll1"
+        android:orientation="vertical"
+        android:padding="5dp">
+       
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/noData"
+        android:visibility="visible"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:id="@+id/imageView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/hintColor"
+            android:background="@drawable/ic_not_found" />
+
+        <TextView
+            android:text="Oops! No Data Found.."
+            android:layout_marginTop="10dp"
+            android:id="@+id/dataText_vehical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView5"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

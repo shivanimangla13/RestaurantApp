@@ -1,0 +1,92 @@
+﻿using System;
+
+namespace com.resturant.Droid.Model
+{
+    public class UserInfo
+    {
+        public int partymastid { get; set; }
+        public string category { get; set; }
+        public string partyid { get; set; }
+        public string supplierid { get; set; }
+        public string partyname { get; set; }
+        public int accountname { get; set; }
+        public string accountnamevalue { get; set; }
+        public string partytype { get; set; }
+        public string group_or_individual { get; set; }
+        public string groupcompanyname { get; set; }
+        public int creditlimit { get; set; }
+        public int creditdays { get; set; }
+        public string createdby1 { get; set; }
+        public string modifiedby1 { get; set; }
+        public int transactionlimit { get; set; }
+        public string partyaddress { get; set; }
+        public int country { get; set; }
+        public string countryvalue { get; set; }
+        public int state { get; set; }
+        public string statevalue { get; set; }
+        public string city { get; set; }
+        public string pincode { get; set; }
+        public string contactperson { get; set; }
+        public string phoneno { get; set; }
+        public string mobno { get; set; }
+        public string faxno { get; set; }
+        public string mailid { get; set; }
+        public string url { get; set; }
+        public string introdby { get; set; }
+        public string cstno { get; set; }
+        public string GSTIN { get; set; }
+        public string CIN { get; set; }
+        public string AadharCardNo { get; set; }
+        public string sstno { get; set; }
+        public string panno { get; set; }
+        public string tinno { get; set; }
+        public string exciseregnno { get; set; }
+        public object range { get; set; }
+        public string rcslno { get; set; }
+        public DateTime effectsfrom { get; set; }
+        public string division { get; set; }
+        public string remarks { get; set; }
+        public string bankname { get; set; }
+        public string branchname { get; set; }
+        public int bankcountry { get; set; }
+        public string bankcountryvalue { get; set; }
+        public int bankstate { get; set; }
+        public string bankstatevalue { get; set; }
+        public string bankcity { get; set; }
+        public string bankaddress { get; set; }
+        public string bankswiftaddress { get; set; }
+        public string accountno { get; set; }
+        public string bankemailid { get; set; }
+        public string banktelno { get; set; }
+        public string bankfaxno { get; set; }
+        public string bankurl { get; set; }
+        public string rangename { get; set; }
+        public string rangeaddress1 { get; set; }
+        public object rangeaddress2 { get; set; }
+        public object rangeaddress3 { get; set; }
+        public string bankexciseregno { get; set; }
+        public string centralexciseno { get; set; }
+        public string turnover { get; set; }
+        public string grossmargin { get; set; }
+        public string overduepayment { get; set; }
+        public string customernoofbills { get; set; }
+        public string lastesaledate { get; set; }
+        public string totalsupplyvalue { get; set; }
+        public string delayedsupplyvalue { get; set; }
+        public string totaldelaeddays { get; set; }
+        public string suppliernoofbills { get; set; }
+        public string lastepurchasedate { get; set; }
+        public int createdby { get; set; }
+        public int modifiedby { get; set; }
+        public DateTime createddate { get; set; }
+        public DateTime modifieddate { get; set; }
+        public int versionno { get; set; }
+        public string PREFIX { get; set; }
+        public int rowstate { get; set; }
+        public string Location { get; set; }
+        public string Profession { get; set; }
+        public string BankAccountName { get; set; }
+        public string IFSC { get; set; }
+        public string FatherName { get; set; }
+    }
+}

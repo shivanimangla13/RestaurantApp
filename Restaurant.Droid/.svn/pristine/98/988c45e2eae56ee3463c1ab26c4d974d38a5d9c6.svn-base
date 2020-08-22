@@ -1,0 +1,155 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Android.App;
+using Android.Content;
+using Android.Net;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using com.resturant.Droid.Model;
+using com.resturant.Droid.Store.Config;
+using com.resturant.Droid.Store.utils;
+using Google.Android.Material.Snackbar;
+using Newtonsoft.Json;
+
+namespace com.resturant.Droid
+{
+    [Activity(Label = "LoginActivity")]
+    public class LoginActivity : Activity
+    {
+
+        EditText userId, password;
+        Button loginButton;
+        TextView btnSignup;
+        TextView forgotPAss, btnignUp;
+        string androidID, token;
+        ProgressDialog progressDialog;
+
+        protected void attachBaseContext(Context newBase)
+        {
+
+            newBase = LocaleHelper.onAttach(newBase);
+            attachBaseContext(newBase);
+        }
+
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            SetContentView(Resource.Layout.activity_login);
+            init();
+        }
+
+        [Obsolete]
+        private void init()
+        {
+
+            progressDialog = new Android.App.ProgressDialog(this);
+            progressDialog.Indeterminate = true;
+            progressDialog.SetProgressStyle(ProgressDialogStyle.Spinner);
+            progressDialog.SetMessage("Loading...");
+            progressDialog.SetCancelable(false);
+
+            userId = FindViewById<EditText>(Resource.Id.etMob);
+            password = FindViewById<EditText>(Resource.Id.etPass);
+            loginButton = FindViewById<Button>(Resource.Id.btn_Login);
+            btnSignup = FindViewById<TextView>(Resource.Id.btn_Signup);
+            forgotPAss = FindViewById<TextView>(Resource.Id.btn_ForgotPass);
+            loginButton.Click += LoginButton_Click;
+            btnSignup.Click += BtnSignup_Click;
+        }
+
+        private void BtnSignup_Click(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(SignupActivity));
+            this.StartActivity(intent);
+        }
+
+        private async void LoginButton_Click(object sender, EventArgs e)
+        {
+            View view = (View)sender;
+            if (userId.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Userid is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+            else if (password.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Password is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+            else if (!isOnline())
+            {
+                Toast.MakeText(this, "Please check your Internet Connection!", ToastLength.Short).Show();
+            }
+            else
+            {
+                progressDialog.Show();
+                loginUrlAsync();
+                progressDialog.Dismiss();
+            }
+
+        }
+        private bool isOnline()
+        {
+            ConnectivityManager cm = (ConnectivityManager)GetSystemService(Context.ConnectivityService);
+
+            return cm.ActiveNetworkInfo != null && cm.ActiveNetworkInfo.IsConnected;
+        }
+
+        private async void loginUrlAsync()
+        {
+            Login login = new Login()
+            {
+                username = userId.Text,
+                password = password.Text
+            };
+
+            try
+            {
+
+                var uri = webapi.loginApi;
+                var loginData = JsonConvert.SerializeObject(login);
+
+                using (var client = new HttpClient())
+                {
+                    var jsonContent = new StringContent(loginData, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(uri, jsonContent);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
+                        var resultString = await response.Content.ReadAsStringAsync();
+                        var responseData = JsonConvert.DeserializeObject<ResponseData>(resultString);
+
+                        var getDataUrl = new System.Uri(webapi.userProfile + responseData.Id.ToString());
+                        var memberResponse = await client.GetStringAsync(getDataUrl);
+                        var memberData = JsonConvert.DeserializeObject<UserInfo>(memberResponse);
+
+                        progressDialog.Dismiss();
+
+                        Session_management sessionManagement = new Session_management(this);
+                        ISharedPreferencesEditor editor = GetSharedPreferences(BaseURL.MyPrefreance, FileCreationMode.Private).Edit();
+                        editor.PutString(BaseURL.KEY_MOBILE, userId.Text);
+                        editor.PutString(BaseURL.KEY_PASSWORD, password.Text);
+                        editor.Apply();
+                        sessionManagement.createLoginSession(memberData.partymastid.ToString(), memberData.partyname, userId.Text, password.Text);
+                        Intent intent = new Intent(this, typeof(MainActivity));
+                        StartActivity(intent);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                Toast.MakeText(this, "Something went wrong.", ToastLength.Short).Show();
+                return;
+
+            }
+        }
+    }
+}

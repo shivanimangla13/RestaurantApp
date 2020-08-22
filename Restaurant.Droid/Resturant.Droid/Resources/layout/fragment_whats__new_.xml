@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mm"
+        android:orientation="vertical">
+        <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+            android:id="@+id/recyclerWhatNew"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/lightGrey"
+            android:scrollbars="none" >
+        </com.cooltechworks.views.shimmer.ShimmerRecyclerView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/viewall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View All"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/mm"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="17dp"
+        android:background="@color/orange"/>
+
+</RelativeLayout>
+
+

@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Android.Support.V7.App;
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Google.Android.Material.TextField;
+using Android.Support.V7.Widget;
+
+namespace com.resturant.Droid.Resturant.Activities
+{
+    [Activity()]
+    public class Add_address : AppCompatActivity
+    {
+        Session_management session_management;
+        LinearLayout back;
+        Button Save, EditBtn;
+        EditText pinCode, houseNo, Area, city, state, landmaark, name, mobNo, alterMob;
+        TextInputLayout tpinCode, thouseNo, tArea, tcity, tstate, tlandmaark, tname, tmobNo, talterMob;
+
+        RadioGroup radioGroup;
+        RadioButton rHome, rWork;
+        CardView currentLoc;
+        string user_id;
+        RecyclerView recyclerViewCity, recyclerViewSociety;
+        string cityId, cityName, socetyId, SocetyName, landmaarkkkk, updtae, addressId, receiver_name, receiver_phone, house_no, landmark, state_st, pincode;
+        ProgressDialog progressDialog;
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            SupportActionBar.Hide();
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            SetContentView(Resource.Layout.activity_add_address);
+            init();
+        }
+
+        public void init()
+        {
+            session_management = new Session_management(this);
+
+            cityName = Intent.GetStringExtra("city_name");
+            receiver_name = Intent.GetStringExtra("receiver_name");
+            receiver_phone = Intent.GetStringExtra("receiver_phone");
+            house_no = Intent.GetStringExtra("house_no");
+            landmark = Intent.GetStringExtra("landmark");
+            state_st = Intent.GetStringExtra("state");
+            pincode = Intent.GetStringExtra("pincode");
+            SocetyName = Intent.GetStringExtra("society");
+            back = (LinearLayout)FindViewById(Resource.Id.back);
+            Save = (Button)FindViewById(Resource.Id.SaveBtn);
+            EditBtn = (Button)FindViewById(Resource.Id.EditBtn);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.SetMessage("Loading...");
+            progressDialog.SetCancelable(false);
+        }
+    }
+}

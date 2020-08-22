@@ -1,0 +1,237 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Android.App;
+using Android.Content;
+using Android.Glide;
+using Android.Glide.Request;
+using Android.OS;
+using Android.Runtime;
+using Android.Support.V7.Widget;
+using Android.Util;
+using Android.Views;
+using Android.Widget;
+using com.resturant.Droid.Model;
+using com.resturant.Droid.Resturant.Activities;
+using com.resturant.Droid.Resturant.utils;
+using Java.Lang;
+
+namespace com.resturant.Droid.Resturant.Adapter
+{
+    public class CartAdapter : RecyclerView.Adapter
+    {
+        ISharedPreferences preferences;
+        public DatabaseHandler dbcart;
+        public List<CartModel> cartList;
+        public int limit = 4;
+        public Context context;
+        public int minteger = 0;
+        public string catId, catName;
+
+        public List<varient_product> varientProducts = new List<varient_product>();
+
+        RecyclerView recyler_popup;
+        LinearLayout cancl;
+        string varient_id, product_id;
+
+        public override int ItemCount
+        {
+            get
+            {
+                return countVal();
+            }
+        }
+
+        public int countVal()
+        {
+            int countValue = 0;
+            if (cartList.Count > limit)
+            {
+                countValue = limit;
+            }
+            else
+            {
+                countValue = cartList.Count;
+            }
+            return countValue;
+        }
+
+        public CartAdapter(Context context, List<CartModel> cartList)
+        {
+            this.cartList = cartList;
+            this.context = context;
+            dbcart = new DatabaseHandler(context);
+
+        }
+
+        public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
+        {
+            MyViewHolder myViewHolder = holder as MyViewHolder;
+
+            dbcart = new DatabaseHandler(context);
+            CartModel cc = cartList[position];
+            myViewHolder.prodNAme.Text = (cc.getpNAme());
+            myViewHolder.pDescrptn.Text = (cc.getpDes());
+            myViewHolder.pQuan.Text = (cc.getpQuan());
+            myViewHolder.pPrice.Text = (cc.getpPrice());
+            myViewHolder.pdiscountOff.Text = (cc.getDiscountOff());
+            myViewHolder.pMrp.Text = (cc.getpMrp());
+            myViewHolder.pMrp.PaintFlags = (myViewHolder.pMrp.PaintFlags | Android.Graphics.PaintFlags.StrikeThruText);
+            byte[] imageByteArray = Base64.Decode(cc.getpImage(), Base64.Default);
+            Glide.With(context)
+                    .Load(imageByteArray)
+                    .Apply(RequestOptions.CircleCropTransform())
+                    .Into(myViewHolder.image);
+
+            double items = double.Parse(dbcart.getInCartItemQty(cartList[position].getpId()));
+            double price = double.Parse(cartList[position].getpPrice());
+
+            myViewHolder.image.Click += delegate
+            {
+                catId = cartList[position].getpId();
+                catName = cartList[position].getpNAme();
+                Intent intent = new Intent(context, typeof(ProductDetails));
+                intent.PutExtra("sId", catId);
+                intent.PutExtra("sName", catName);
+                context.StartActivity(intent);
+            };
+
+            myViewHolder.btn_Add.Click += delegate
+             {
+                 myViewHolder.btn_Add.Visibility = ViewStates.Gone;
+                 myViewHolder.ll_addQuan.Visibility = ViewStates.Visible;
+                 myViewHolder.txtQuan.Text = "1";
+                 updateMultiply(position, myViewHolder);
+             };
+            myViewHolder.plus.Click += delegate
+            {
+                increaseInteger(myViewHolder);
+                updateMultiply(position, myViewHolder);
+                
+            };
+            myViewHolder.minus.Click += delegate
+            {
+                decreaseInteger(myViewHolder);
+                updateMultiply(position, myViewHolder);
+            };
+        }
+
+        private void updateMultiply(int position, MyViewHolder myViewHolder)
+        {
+
+            Dictionary<string, string> map = new Dictionary<string, string>();
+            map.Add("varient_id", cartList[position].getVarient_id());
+            map.Add("product_name", cartList[position].getpNAme());
+            map.Add("category_id", cartList[position].getpId());
+            map.Add("title", cartList[position].getpDes());
+            map.Add("price", cartList[position].getpPrice());
+            map.Add("mrp", cartList[position].getpMrp());
+            map.Add("product_image", cartList[position].getpImage());
+            map.Add("status", cartList[position].getStatus());
+            map.Add("in_stock", cartList[position].getIn_stock());
+            map.Add("unit_value", cartList[position].getpQuan());
+            map.Add("unit", cartList[position].getUnit());
+            map.Add("increament", "0");
+            map.Add("rewards", "0");
+            map.Add("stock", "0");
+            map.Add("product_description", "0");
+
+            if (myViewHolder.txtQuan.Text.ToString() != "0")
+            {
+                if (dbcart.isInCart(cartList[position].getVarient_id()))
+                {
+                    dbcart.setCart(map, int.Parse(myViewHolder.txtQuan.Text.ToString()));
+
+                }
+                else
+                {
+                    dbcart.setCart(map, int.Parse(myViewHolder.txtQuan.Text.ToString()));
+                }
+            }
+            else
+            {
+                dbcart.removeItemFromCart(cartList[position].getVarient_id());
+            }
+            try
+            {
+                int items = (int)double.Parse(dbcart.getInCartItemQty(map.GetValueOrDefault("varient_id")));
+                double price = double.Parse(map.GetValueOrDefault("price").Trim());
+                double mrp = double.Parse(map.GetValueOrDefault("mrp").Trim());
+                //  Double reward = Double.parseDouble(map.get("rewards"));
+                // tv_reward.setText("" + reward * items);
+                myViewHolder.pDescrptn.Text = "" + cartList[position].getpDes();
+                myViewHolder.pPrice.Text = "" + price * items;
+                myViewHolder.txtQuan.Text = "" + items;
+                myViewHolder.pMrp.Text = "" + mrp * items;
+            }
+            catch (IndexOutOfBoundsException e)
+            {
+                e.ToString();
+            }
+        }
+
+        public void increaseInteger(MyViewHolder myViewHolder)
+        {
+            minteger = minteger + 1;
+            display(minteger, myViewHolder);
+        }
+
+        public void decreaseInteger(MyViewHolder myViewHolder)
+        {
+            if (minteger == 1)
+            {
+                minteger = 1;
+                display(minteger, myViewHolder);
+                myViewHolder.ll_addQuan.Visibility = ViewStates.Gone;
+                myViewHolder.btn_Add.Visibility = ViewStates.Visible;
+            }
+            else
+            {
+                minteger = minteger - 1;
+                display(minteger, myViewHolder);
+            }
+        }
+
+        private void display(int number, MyViewHolder myViewHolder)
+        {
+            myViewHolder.txtQuan.Text = "" + number;
+        }
+
+        public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            View itemView = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.layout_product_add, parent, false);
+            MyViewHolder view = new MyViewHolder(itemView);
+            return view;
+        }
+
+
+        public class MyViewHolder : RecyclerView.ViewHolder
+        {
+            public TextView prodNAme, pDescrptn, pQuan, pPrice, pdiscountOff, pMrp, minus, plus, txtQuan;
+            public ImageView image;
+            public LinearLayout btn_Add, ll_addQuan;
+            public RelativeLayout rlQuan;
+            public View mainView;
+
+            public MyViewHolder(View view) : base(view)
+            {
+                prodNAme = (TextView)view.FindViewById(Resource.Id.txt_pName);
+                pDescrptn = (TextView)view.FindViewById(Resource.Id.txt_pInfo);
+                pQuan = (TextView)view.FindViewById(Resource.Id.txt_unit);
+                pPrice = (TextView)view.FindViewById(Resource.Id.txt_Pprice);
+                image = (ImageView)view.FindViewById(Resource.Id.prodImage);
+                pdiscountOff = (TextView)view.FindViewById(Resource.Id.txt_discountOff);
+                pMrp = (TextView)view.FindViewById(Resource.Id.txt_Mrp);
+                rlQuan = (RelativeLayout)view.FindViewById(Resource.Id.rlQuan);
+                btn_Add = (LinearLayout)view.FindViewById(Resource.Id.btn_Add);
+                ll_addQuan = (LinearLayout)view.FindViewById(Resource.Id.ll_addQuan);
+                txtQuan = (TextView)view.FindViewById(Resource.Id.txtQuan);
+                minus = (TextView)view.FindViewById(Resource.Id.minus);
+                plus = (TextView)view.FindViewById(Resource.Id.plus);
+                mainView = view;
+            }
+        }
+    }
+}

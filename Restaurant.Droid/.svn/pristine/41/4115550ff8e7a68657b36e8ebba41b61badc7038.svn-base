@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.MainActivity">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/orange"
+            app:titleTextAppearance="@style/RobotoBoldTextAppearance"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/sliderr"
+                android:layout_width="17dp"
+                android:layout_height="12dp"
+                android:background="@drawable/ic_menu"
+                android:layout_gravity="left"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:backgroundTint="@color/orange">
+
+            </ImageView>
+
+            <TextView
+                android:textStyle="bold"
+                android:fontFamily="@font/opensans_semibold"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/orange"
+                android:textSize="18sp"
+                android:visibility="gone"
+                android:gravity="left|center"
+                android:text="Go Grocer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:id="@+id/badge_layout1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                >
+
+                <RelativeLayout
+                    android:visibility="gone"
+                    android:id="@+id/relative_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/bell"
+                        android:layout_width="19dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_cart"
+                        android:layout_marginRight="20dp"
+                        android:backgroundTint="@color/grey">
+
+                    </ImageView>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/totalBudgetCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-12dp"
+                    android:layout_marginRight="9dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_alignRight="@id/relative_layout"
+                    android:background="@drawable/item_count"
+                    android:text="50"
+                    android:textColor="#FFF"
+                    android:textSize="10sp"
+                    android:textStyle="normal" />
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <include
+        layout="@layout/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"/>
+
+</RelativeLayout>

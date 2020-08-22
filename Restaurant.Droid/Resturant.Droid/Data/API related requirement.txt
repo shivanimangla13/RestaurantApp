@@ -1,0 +1,64 @@
+Login Realted;
+		public static string SignUp = BASE_URL + "register";  - Done
+        public static string Login = BASE_URL + "login"; - Done
+
+        public static string forget_password = BASE_URL + "forget_password"; - Required -- done   ---BASE_URL + SendForgetPasswordOtp?emailorMob=""&type=ForgotPassword&memberid="")
+				
+        public static string verify_otp = BASE_URL + "verify_otp"; - Required -- done-- BASE_URL + "ChangeforgotPassword?emailOrMob=""&password=""&string memberid="""
+		
+        public static string ChangePass = BASE_URL + "change_password"; - Required
+        public static string myprofile = BASE_URL + "myprofile" - done--  (BASE_URL + "UserInfo/GetPartyMasterByUserid?userid=1")   ;
+		
+		public static string EDIT_PROFILE_URL = BASE_URL + "profile_edit" - done -- (BASE_URL + "UserInfo/GetPartyMasterByUserid?userid=1") for get fields ;
+		
+		(BASE_URL + "UserInfo/UpdateUserProfile") send object with same as get
+		
+        public static string CityListUrl = BASE_URL + "city";
+        public static string SocietyListUrl = BASE_URL + "society"; (Location)
+        public static string Add_address = BASE_URL + "add_address";
+        public static string ShowAddress = BASE_URL + "show_address";
+        public static string SelectAddressURL = BASE_URL + "select_address";
+        public static string EditAddress = BASE_URL + "edit_address";
+
+
+Banner Related
+        public static string BANNER = BASE_URL + "banner"; - Header Banner Required -- done-- (BASE_URL + "Company/GetStoreSliders")
+	\   public static string secondary_banner = BASE_URL + "secondary_banner"; - Footer Banner Required -- done -- (BASE_URL + "Company/GetCompany") -- in response object there is a field - FooterBannerUrl
+						
+Product Related		
+        public static string Categories = BASE_URL + "catee"; Required
+		public static string cat_product = BASE_URL + "cat_product";
+        public static string ProductVarient = BASE_URL + "varient"; - will check this later
+        public static string Search = BASE_URL + "search"; Required
+ 
+Product Filters 
+		public static string HomeTopSelling = BASE_URL + "top_selling"; - orders greater then 5
+        public static string HomeRecent = BASE_URL + "recentselling";
+        public static string HomeDeal = BASE_URL + "dealproduct";
+		public static string topsix = BASE_URL + "topsix";
+		public static string whatsnew = BASE_URL + "whatsnew";
+
+Order Related
+        public static string ADD_ORDER_URL = BASE_URL + "checkout";
+        public static string COUPON_CODE = BASE_URL + "couponlist";
+        public static string apply_coupon = BASE_URL + "apply_coupon";
+        public static string redeem_rewards = BASE_URL + "redeem_rewards";
+        public static string DELETE_ORDER_URL = BASE_URL + "cancelling_reasons";
+        public static string delete_order = BASE_URL + "delete_order";
+        public static string delivery_info = BASE_URL + "delivery_info";
+        public static string CalenderUrl = BASE_URL + "timeslot";
+        public static string WALLET_REFRESH = BASE_URL + "walletamount?user_id=";
+        public static string RecharegeWallet = BASE_URL + "recharge_wallet";
+        public static string OrderDoneUrl = BASE_URL + "completed_orders";
+        public static string PendingOrderUrl = BASE_URL + "ongoing_orders";
+        public static string OrderContinue = BASE_URL + "make_an_order";
+		public static string MinMaxOrder = BASE_URL + "minmax";
+		public static string Wallet_CHECKOUT = BASE_URL + "";
+		
+        public static string AboutUrl = BASE_URL + "appaboutus";
+		public static string TermsUrl = BASE_URL + "appterms";
+        public static string SupportUrl = BASE_URL + "appterms";
+        public static string NoticeURl = BASE_URL + "notificationlist";
+        public static string updatenotifyby = BASE_URL + "updatenotifyby";
+        public static string delete_all_notification = BASE_URL + "delete_all_notification";
+        public static string rewardlines = BASE_URL + "rewardlines";

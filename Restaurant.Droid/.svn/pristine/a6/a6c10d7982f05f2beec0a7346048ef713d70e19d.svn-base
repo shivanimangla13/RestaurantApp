@@ -1,0 +1,378 @@
+﻿using System;
+using System.Collections.Generic;
+using Android;
+using Android.App;
+using Android.Content;
+using Android.Graphics;
+using Android.Locations;
+using Android.OS;
+using Android.Runtime;
+using Android.Support.Design.Widget;
+using Android.Support.V4.View;
+using Android.Support.V4.Widget;
+using Android.Support.V7.App;
+using Android.Views;
+using Android.Views.InputMethods;
+using Android.Widget;
+using com.resturant.Droid.Resturant.Activities;
+using com.resturant.Droid.Resturant.Config;
+using com.resturant.Droid.Resturant.Fragments;
+namespace com.resturant.Droid
+{
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
+    [Obsolete]
+    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
+    {
+        public static BottomNavigationView navigation;
+        int padding = 0;
+        private Session_management sessionManagement;
+        //private AppBarConfiguration mAppBarConfiguration;
+        LinearLayout My_Order, My_Reward, My_Walllet, My_Cart;
+        RelativeLayout loginSignUp, profile, aboutUs, TermsPolicy, ContactUs, share, logout;
+        private IMenu nav_menu;
+        public NavigationView navigationView;
+        LinearLayout viewpa;
+        TextView mTitle, username;
+        Button login, signup;
+        private ImageView iv_profile;
+        TextView totalBudgetCount;
+        Toolbar toolbar;
+        ImageView sliderr;
+
+        List<Address> addresses = new List<Address>();
+        String latitude, longitude, address, city, state, country, postalCode;
+        LocationManager locationManager;
+        ISharedPreferences sharedPreferences;
+        ActionBarDrawerToggle toggle;
+
+        [Obsolete]
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            SetContentView(Resource.Layout.activity_main);
+            sessionManagement = new Session_management(this);
+            Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+            SetSupportActionBar(toolbar);
+
+            DrawerLayout drawer = (DrawerLayout)FindViewById(Resource.Id.drawer_layout);
+
+            toggle = new ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
+            drawer.AddDrawerListener(toggle);
+            toggle.SyncState();
+
+            navigationView = (NavigationView)FindViewById(Resource.Id.nav_view);
+            IMenu m = navigationView.Menu;
+            for (int i = 0; i < m.Size(); i++)
+            {
+                IMenuItem mi = m.GetItem(i);
+
+                //for aapplying a font to subMenu ...
+                ISubMenu subMenu = mi.SubMenu;
+                if (subMenu != null && subMenu.Size() > 0)
+                {
+                    for (int j = 0; j < subMenu.Size(); j++)
+                    {
+                        IMenuItem subMenuItem = subMenu.GetItem(j);
+                    }
+                }
+            }
+
+            View headerView = navigationView.GetHeaderView(0);
+            navigationView.Background.SetColorFilter(Android.Graphics.Color.Rgb(128, 0, 0), PorterDuff.Mode.Multiply);
+            navigationView.SetNavigationItemSelectedListener(this);
+            nav_menu = navigationView.Menu;
+            View header = ((NavigationView)FindViewById(Resource.Id.nav_view)).GetHeaderView(0);
+            viewpa = (LinearLayout)header.FindViewById(Resource.Id.viewpa);
+            if (sessionManagement.isLoggedIn())
+            {
+                viewpa.Visibility = ViewStates.Visible;
+            }
+
+            My_Order = (LinearLayout)header.FindViewById(Resource.Id.my_orders);
+            My_Reward = (LinearLayout)header.FindViewById(Resource.Id.my_reward);
+            My_Walllet = (LinearLayout)header.FindViewById(Resource.Id.my_wallet);
+            My_Cart = (LinearLayout)header.FindViewById(Resource.Id.my_cart);
+            iv_profile = (ImageView)header.FindViewById(Resource.Id.iv_header_img);
+            username = (TextView)header.FindViewById(Resource.Id.tv_header_name);
+
+            iv_profile.Click += delegate
+            {
+                if (sessionManagement.isLoggedIn())
+                {
+                    //Edit_profile_fragment fm = new Edit_profile_fragment();
+                    //FragmentManager fragmentManager = fragmentManager();
+                    //fragmentManager.BeginTransaction().Replace(Resource.Id.contentPanel, fm)
+                    //        .addToBackStack(null).commit();
+                }
+                else
+                {
+                    Intent i = new Intent(this, typeof(LoginActivity));
+                    StartActivity(i);
+                    OverridePendingTransition(0, 0);
+                };
+            };
+
+            sideMenu();
+
+
+
+            if (savedInstanceState == null)
+            {
+                HomeeeFragment fm = new HomeeeFragment();
+                Android.Support.V4.App.FragmentManager fragmentManager = SupportFragmentManager;
+                fragmentManager.BeginTransaction()
+                        .Replace(Resource.Id.contentPanel, fm, "Home_fragment")
+                        .SetTransition(Android.Support.V4.App.FragmentTransaction.TransitFragmentOpen)
+                        .Commit();
+            }
+            SupportFragmentManager.BackStackChanged += SupportFragmentManager_BackStackChanged;
+            initComponent();
+            loadFragment(new HomeeeFragment());
+        }
+
+        private void SupportFragmentManager_BackStackChanged(object sender, EventArgs e)
+        {
+            OnBackStackChanged();
+        }
+
+        public void sideMenu()
+        {
+
+            if (sessionManagement.isLoggedIn())
+            {
+                nav_menu.FindItem(Resource.Id.nav_logout).SetVisible(true);
+                nav_menu.FindItem(Resource.Id.nav_my_profile).SetVisible(true);
+                nav_menu.FindItem(Resource.Id.sign).SetVisible(false);
+                nav_menu.FindItem(Resource.Id.nav_powerd).SetVisible(true);
+
+                username.Text = sessionManagement.getUserDetails().Get(BaseURL.KEY_NAME).ToString();
+            }
+            else
+            {
+
+                nav_menu.FindItem(Resource.Id.login).SetVisible(false);
+                nav_menu.FindItem(Resource.Id.nav_my_profile).SetVisible(false);
+                nav_menu.FindItem(Resource.Id.nav_logout).SetVisible(false);
+                nav_menu.FindItem(Resource.Id.sign).SetVisible(true);
+            }
+        }
+
+        public override void OnBackPressed()
+        {
+            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
+            if (drawer.IsDrawerOpen(GravityCompat.Start))
+            {
+                drawer.CloseDrawer(GravityCompat.Start);
+            }
+            else
+            {
+                base.OnBackPressed();
+            }
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.menu_main, menu);
+            return true;
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            int id = item.ItemId;
+            if (id == Resource.Id.action_settings)
+            {
+                return true;
+            }
+
+            return base.OnOptionsItemSelected(item);
+        }
+
+        [Obsolete]
+        public bool OnNavigationItemSelected(IMenuItem item)
+        {
+            int id = item.ItemId;
+
+            Android.Support.V4.App.Fragment fm = null;
+            Bundle args = new Bundle();
+
+            if (id == Resource.Id.sign)
+            {
+                Intent i = new Intent(this, typeof(LoginActivity));
+                StartActivity(i);
+            }
+            else if (id == Resource.Id.nav_logout)
+            {
+                sessionManagement.logoutSession();
+                Finish();
+            }
+            if (id == Resource.Id.nav_aboutus)
+            {
+                Intent i = new Intent(this, typeof(About_us_fragment));
+                StartActivity(i);
+            }
+            if (id == Resource.Id.nav_policy)
+            {
+                Intent i = new Intent(this, typeof(Terms_and_Condition_fragment));
+                StartActivity(i);
+            }
+            if (id == Resource.Id.nav_share)
+            {
+                Intent i = new Intent(this, typeof(Terms_and_Condition_fragment));
+                StartActivity(i);
+            }
+            else if (id == Resource.Id.navigation_home)
+            {
+                loadFragment(new HomeeeFragment());
+
+                HomeeeFragment appNewsHome1Fragment = new HomeeeFragment();
+                Android.Support.V4.App.FragmentManager manager = SupportFragmentManager;
+                Android.Support.V4.App.FragmentTransaction transaction = manager.BeginTransaction();
+                transaction.Replace(Resource.Id.contentPanel, appNewsHome1Fragment);
+                transaction.Commit();
+                return true;
+            }
+
+            /* else if (id == Resource.Id.nav_shop_now) {
+                 fm = new Shop_Now_fragment();
+             } */
+            else if (id == Resource.Id.nav_my_profile)
+            {
+                Intent i = new Intent(this, typeof(Edit_profile_fragment));
+                StartActivity(i);
+
+            }
+            //        else if (id == Resource.Id.nav_aboutus)
+            //        {
+            //            //            toolbar.setTitle("About");
+            //            StartActivity(new Intent(this, About_us));
+            //    } else if (id == Resource.Id.nav_policy) {
+            //        fm = new Terms_and_Condition_fragment();
+            //args.putString("url", TermsUrl);
+            //        args.putString("title", getResources().getString(R.string.nav_terms));
+            //        fm.setArguments(args);
+            //    }
+            //        else if (id == Resource.Id.nav_review) {
+            //            //reviewOnApp();
+            //        }
+            //        else if (id == Resource.Id.nav_contact) {
+            //            fm = new Contact_Us_fragment();
+            //args.putString("url", SupportUrl);
+            //            args.putString("title", getResources().getString(R.string.nav_terms));
+            //            fm.setArguments(args);
+
+            //        }
+            //        else if (id == Resource.Id.nav_review) {
+            //            reviewOnApp();
+            //        }
+            //else if (id == Resource.Id.nav_share) {
+            //    shareApp();
+
+            //        else if (id == Resource.Id.nav_powerd) {
+            //            // stripUnderlines(textView);
+            //            String url = "http://sameciti.com";
+            //            Intent i = new Intent(Intent.ACTION_VIEW);
+            //            i.setData(Uri.parse(url));
+            //            startActivity(i);
+            //            finish();
+            //        }
+
+            if (fm != null)
+            {
+
+
+                Android.Support.V4.App.FragmentManager fragmentManager = SupportFragmentManager;
+                fragmentManager.BeginTransaction().Replace(Resource.Id.contentPanel, fm)
+                                                .AddToBackStack(null).Commit();
+            }
+
+            DrawerLayout drawer = (DrawerLayout)FindViewById(Resource.Id.drawer_layout);
+            drawer.CloseDrawer(GravityCompat.Start);
+            return true;
+        }
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        [Obsolete]
+        public void OnBackStackChanged()
+        {
+            DrawerLayout drawer = (DrawerLayout)FindViewById(Resource.Id.drawer_layout);
+            InputMethodManager inputMethodManager = (InputMethodManager)GetSystemService(Context.InputMethodService);
+            inputMethodManager.HideSoftInputFromWindow(CurrentFocus.WindowToken, 0);
+            Android.Support.V4.App.Fragment fr = SupportFragmentManager.FindFragmentById(Resource.Id.contentPanel);
+
+            string fm_name = fr.Class.SimpleName;
+            if (fm_name.Contains("Home_fragment"))
+            {
+                drawer.SetDrawerLockMode(DrawerLayout.LockModeUnlocked);
+                toggle.DrawerIndicatorEnabled = true;
+                SupportActionBar.SetDisplayHomeAsUpEnabled(false);
+                toggle.SyncState();
+
+            }
+            initComponent();
+            loadFragment(new HomeeeFragment());
+        }
+
+        private void loadFragment(Android.Support.V4.App.Fragment fragment)
+        {
+            this.SupportFragmentManager.BeginTransaction()
+                    .Replace(Resource.Id.contentPanel, fragment)
+                    .CommitAllowingStateLoss();
+        }
+
+        private void initComponent()    
+        {
+            navigation = (BottomNavigationView)FindViewById(Resource.Id.nav_view12);
+            navigation.NavigationItemSelected += BottomNavigation_NavigationItemSelected;
+        }
+
+        private void BottomNavigation_NavigationItemSelected(object sender, BottomNavigationView.NavigationItemSelectedEventArgs e)
+        {
+            LoadFragment(e.Item.ItemId);
+        }
+
+        void LoadFragment(int id)
+        {
+            Android.Support.V4.App.Fragment fragment = null;
+            switch (id)
+            {
+                case Resource.Id.navigation_home:
+                    loadFragment(new HomeeeFragment());
+                    HomeeeFragment appNewsHome1Fragment = new HomeeeFragment();
+                    Android.Support.V4.App.FragmentManager manager = SupportFragmentManager;
+                    Android.Support.V4.App.FragmentTransaction transaction = manager.BeginTransaction();
+                    transaction.Replace(Resource.Id.contentPanel, appNewsHome1Fragment);
+                    transaction.Commit();
+                    break;
+            }
+
+            if (fragment == null)
+                return;
+
+            SupportFragmentManager.BeginTransaction()
+                .Replace(Resource.Id.contentPanel, fragment)
+                .Commit();
+        }
+        //public bool OnNavigationItemSelected(IMenuItem item)
+        //{
+        //    switch (item.ItemId)
+        //    {
+        //        case Resource.Id.navigation_home:
+        //            loadFragment(new HomeFragment());
+        //            HomeFragment appNewsHome1Fragment = new HomeFragment();
+        //            FragmentManager manager = FragmentManager;
+        //            FragmentTransaction transaction = manager.BeginTransaction();
+        //            transaction.Replace(Resource.Id.contentPanel, appNewsHome1Fragment);
+        //            transaction.Commit();
+        //            return true;
+        //    }
+        //    return false;
+        //}
+    }
+}
+

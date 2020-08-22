@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Google.Android.Material.Snackbar;
+
+namespace Resturant.Droid
+{
+    [Activity(Label = "LoginActivity")]
+    public class LoginActivity : Activity
+    {
+
+        EditText userId, password;
+        Button loginButton;
+        TextView btnSignup;
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            SetContentView(Resource.Layout.activity_login);
+
+            userId = FindViewById<EditText>(Resource.Id.etMob);
+            password = FindViewById<EditText>(Resource.Id.etPass);
+            loginButton = FindViewById<Button>(Resource.Id.btn_Login);
+            btnSignup = FindViewById<TextView>(Resource.Id.btn_Signup);
+
+            loginButton.Click += LoginButton_Click;
+            btnSignup.Click += BtnSignup_Click;
+        }
+
+        private void BtnSignup_Click(object sender, EventArgs e)
+        {
+            var intent = new Intent(this, typeof(SignupActivity));
+            this.StartActivity(intent);
+        }
+
+        private void LoginButton_Click(object sender, EventArgs e)
+        {
+            View view = (View)sender;
+            if (userId.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Userid is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+            if(password.Text == string.Empty)
+            {
+                Snackbar.Make(view, "Password is required.", Snackbar.LengthShort).Show();
+                return;
+            }
+        }
+    }
+}

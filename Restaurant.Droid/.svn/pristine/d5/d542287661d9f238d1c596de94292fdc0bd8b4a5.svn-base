@@ -1,0 +1,213 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+using Android.Content;
+using Android.Graphics;
+using Android.Locations;
+using Android.OS;
+using Android.Support.Design.Widget;
+using Android.Support.V4.View;
+using Android.Views;
+using Android.Views.Animations;
+using Android.Widget;
+using AndroidX.RecyclerView.Widget;
+using com.resturant.Droid.Resturant.Config;
+using Newtonsoft.Json;
+using Org.Json;
+//using Com.Daimajia.Slider.Library;
+
+namespace com.resturant.Droid
+{
+    public class HomeeeFragment : Android.Support.V4.App.Fragment, View.IOnClickListener, RecyclerView.IOnItemTouchListener
+    {
+        ViewPager viewPager;
+        TabLayout tabLayout;
+        // PageAdapter pageAdapter;
+
+        TabItem tab1, tab2, tab3, tab4;
+        float translationY = 100.00f;
+        FloatingActionButton fabMain, fabOne, fabTwo, fabThree, fabfour;
+
+        LinearLayout Search_layout;
+        ScrollView scrollView;
+        RecyclerView rv_items;
+        //SliderLayout banner_slider, featuredslider, home_list_banner;
+
+        OvershootInterpolator interpolator = new OvershootInterpolator();
+
+        private static string TAG1 = "MainActivity";
+
+        bool isMenuOpen = false;
+
+        RecyclerView recyclerViewCate, recyclerViewDEal;
+        private bool isSubcat = false;
+        string productId;
+
+        TextView loc;
+        string latitude, longitude, address, city, state, country, postalCode;
+        LocationManager locationManager;
+        ISharedPreferences sharedPreferences;
+
+        ImageView imageView;
+        ImageView footerImage;
+        int headerIndex;
+        Android.Net.Uri[] headerImages;
+
+        public HomeeeFragment()
+        {
+
+        }
+
+
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
+                            Bundle savedInstanceState)
+        {
+            base.OnCreateView(inflater, container, savedInstanceState);
+            View view = inflater.Inflate(Resource.Layout.fragment_home, container, false);
+            ((MainActivity)this.Activity).SetTitle(Resource.String.app_name);
+            imageView = view.FindViewById<ImageView>(Resource.Id.imageslider);
+            footerImage = view.FindViewById<ImageView>(Resource.Id.imagefooterslider);
+            headerIndex = 0;
+            HeaderLoadImages();
+            FooterLoadImages();
+            // Set the first image to imageview
+            setHeaderSlideShow(); // Make the timer to change image
+
+            sharedPreferences = this.Activity.GetSharedPreferences(BaseURL.MyPrefreance, FileCreationMode.Private);
+            latitude = sharedPreferences.GetString(BaseURL.LAT, null);
+            longitude = sharedPreferences.GetString(BaseURL.LONG, null);
+            address = sharedPreferences.GetString(BaseURL.ADDRESS, null);
+            city = sharedPreferences.GetString(BaseURL.CITY, null);
+
+            rv_items = (RecyclerView)view.FindViewById(Resource.Id.rv_home);
+            //home_list_banner = view.FindViewById(Resource.Id.home_img_slider);
+
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this.Activity, 3);
+            rv_items.SetLayoutManager(gridLayoutManager);
+            rv_items.SetItemAnimator(new DefaultItemAnimator());
+            rv_items.NestedScrollingEnabled = false;
+
+            rv_items.AddOnItemTouchListener(this);
+            return view;
+        }
+        void setHeaderSlideShow()
+        {
+            Timer timer;
+            timer = new Timer();
+            timer.Interval = 4000; // Interval to change image (4000 = 4 second per image)
+            timer.Elapsed += (sender, e) =>
+            {
+                showNextHeaderImage();
+            };
+            timer.Start();
+            timer.AutoReset = true;
+        }
+        void showNextHeaderImage()
+        {
+            headerIndex++;
+            if (headerIndex == headerImages.Length) { headerIndex = 0; }
+            Activity.RunOnUiThread(async () => imageView.SetImageBitmap(await GetImageBitmapFromURL(headerImages[headerIndex].ToString())));
+        }
+
+        public async void HeaderLoadImages()
+        {
+            using (var client = new HttpClient())
+            {
+                var getDataUrl = new Uri(BaseURL.BANNER);
+                var bannerList = await client.GetStringAsync(getDataUrl);
+                var data = JsonConvert.DeserializeObject<List<ImageSlider>>(bannerList);
+                if(data.Count > 0)
+                {
+                    var imageList = data.Select(x => Android.Net.Uri.Parse(x.SliderPath)).ToArray();
+                    headerImages = imageList;
+                    imageView.SetImageBitmap(await GetImageBitmapFromURL(headerImages[0].ToString()));
+                }
+                else
+                {
+                    headerImages = null;
+                }
+            }
+        }
+        public async void FooterLoadImages()
+        {
+            using (var client = new HttpClient())
+            {
+                var getDataUrl = new Uri(BaseURL.secondary_banner);
+                var bannerList = await client.GetStringAsync(getDataUrl);
+                var url = JsonConvert.DeserializeObject<string>(bannerList);
+                footerImage.SetImageBitmap(await GetImageBitmapFromURL(Android.Net.Uri.Parse(url).ToString()));
+            }
+        }
+
+        private async Task<Bitmap> GetImageBitmapFromURL(string url)
+        {
+            Bitmap imageBitmap = null;
+            var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+            try
+            {
+                using (var httpResponse = await httpClient.GetAsync(url))
+                {
+                    if (httpResponse.StatusCode == HttpStatusCode.OK)
+                    {
+                        using (var webClient = new WebClient())
+                        {
+                            var imageBytes = webClient.DownloadData(url);
+                            if (imageBytes != null && imageBytes.Length > 0)
+                            {
+                                imageBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return imageBitmap;
+            }
+            
+            return imageBitmap;
+        }
+
+        public void OnClick(View v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool OnInterceptTouchEvent(RecyclerView recyclerView, MotionEvent @event)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnRequestDisallowInterceptTouchEvent(bool disallow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnTouchEvent(RecyclerView recyclerView, MotionEvent @event)
+        {
+            //string getid = category_modelList.get(position).getCat_id();
+
+            //Intent intent = new Intent(this.Activity, CategoryPage);
+            //intent.PutExtra("cat_id", getid);
+            //intent.PutExtra("title", category_modelList.get(position).getTitle());
+            //intent.PutExtra("image", category_modelList.get(position).getImage());
+            //StartActivity(intent);
+        }
+    }
+
+    public class ImageSlider
+    {
+        public int StoreSliderID { get; set; }
+        public string SliderPath { get; set; }
+        public string SliderImage { get; set; }
+        public string SliderName { get; set; }
+        public string ImageData { get; set; }
+        public string imgsrc { get; set; }
+    }
+}
+

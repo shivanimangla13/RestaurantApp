@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Android.Support.V7.App;
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Google.Android.Material.TextField;
+using Android.Support.V7.Widget;
+using com.resturant.Droid.Resturant.Config;
+
+namespace com.resturant.Droid.Resturant.Activities
+{
+    [Activity()]
+    public class Add_address : AppCompatActivity
+    {
+        Session_management session_management;
+        public LinearLayout back;
+        public Button Save, EditBtn;
+        public EditText pinCode, address, remark, city, state,country, specialRemark, name,email, mobNo, alterMob;
+
+        string user_id;
+        RecyclerView recyclerViewCity, recyclerViewSociety;
+        string cityId, cityName, socetyId, SocetyName, landmaarkkkk, updtae, addressId, receiver_name, receiver_phone, house_no, landmark, state_st, pincode;
+        ProgressDialog progressDialog;
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            SupportActionBar.Hide();
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            SetContentView(Resource.Layout.activity_add_address);
+            init();
+        }
+
+        public void init()
+        {
+            address = (EditText)FindViewById(Resource.Id.input_HouseNO);
+            country = (EditText)FindViewById(Resource.Id.input_country);
+            state = (EditText)FindViewById(Resource.Id.input_state);
+            city = (EditText)FindViewById(Resource.Id.input_city);
+            pinCode = (EditText)FindViewById(Resource.Id.input_pinCode);
+            remark = (EditText)FindViewById(Resource.Id.input_remark);
+            specialRemark = (EditText)FindViewById(Resource.Id.input_specialRmk);
+            name = (EditText)FindViewById(Resource.Id.input_NAme);
+            email = (EditText)FindViewById(Resource.Id.input_Email);
+            mobNo = (EditText)FindViewById(Resource.Id.input_mobNO);
+            alterMob = (EditText)FindViewById(Resource.Id.input_AltermobileNO);
+
+            session_management = new Session_management(this);
+
+            address.Text = session_management.GetAddressDetails().Get(BaseURL.ADDRESS).ToString();
+            country.Text = session_management.GetAddressDetails().Get(BaseURL.COUNTRY).ToString();
+            state.Text = session_management.GetAddressDetails().Get(BaseURL.STATE).ToString();
+            city.Text = session_management.GetAddressDetails().Get(BaseURL.CITY).ToString();
+            pinCode.Text = session_management.GetAddressDetails().Get(BaseURL.PINCODE).ToString();
+            name.Text = session_management.GetAddressDetails().Get(BaseURL.FULLNAME).ToString();
+            email.Text = session_management.GetAddressDetails().Get(BaseURL.EMAIL).ToString();
+            mobNo.Text = session_management.GetAddressDetails().Get(BaseURL.MOBILE).ToString();
+
+            back = (LinearLayout)FindViewById(Resource.Id.back);
+            Save = (Button)FindViewById(Resource.Id.SaveBtn);
+            EditBtn = (Button)FindViewById(Resource.Id.EditBtn);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.SetMessage("Loading...");
+            progressDialog.SetCancelable(false);
+            back.Click += delegate
+            {
+                Finish();
+            }
+        }
+    }
+}

@@ -1,0 +1,116 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Android.Content;
+using Android.Locations;
+using Android.OS;
+using Android.Runtime;
+using Android.Support.Design.Widget;
+using Android.Support.V4.View;
+using Android.Views;
+using Android.Views.Animations;
+using Android.Widget;
+using AndroidX.RecyclerView.Widget;
+using Java.Lang;
+using com.resturant.Droid.Store;
+using com.resturant.Droid.Store.Config;
+using Android.Support.V4.App;
+
+namespace com.resturant.Droid.Store.Fragments
+{
+    public class HomeeeFragment : Fragment, View.IOnClickListener, RecyclerView.IOnItemTouchListener
+    {
+        ViewPager viewPager;
+        TabLayout tabLayout;
+        // PageAdapter pageAdapter;
+
+        TabItem tab1, tab2, tab3, tab4;
+        float translationY = 100.00f;
+        FloatingActionButton fabMain, fabOne, fabTwo, fabThree, fabfour;
+
+        LinearLayout Search_layout;
+        ScrollView scrollView;
+        RecyclerView rv_items;
+        //SliderLayout banner_slider, featuredslider, home_list_banner;
+
+        OvershootInterpolator interpolator = new OvershootInterpolator();
+
+        private static string TAG1 = "MainActivity";
+
+        bool isMenuOpen = false;
+
+        RecyclerView recyclerViewCate, recyclerViewDEal;
+        private bool isSubcat = false;
+        string productId;
+
+        TextView loc;
+        string latitude, longitude, address, city, state, country, postalCode;
+        LocationManager locationManager;
+        ISharedPreferences sharedPreferences;
+
+        public override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+        }
+
+        public static HomeeeFragment NewInstance()
+        {
+            var frag1 = new HomeeeFragment { Arguments = new Bundle() };
+            return frag1;
+        }
+
+        
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
+                            Bundle savedInstanceState)
+        {
+            base.OnCreateView(inflater, container, savedInstanceState);
+            View view = inflater.Inflate(Resource.Layout.fragment_home, container, false);
+            ((MainActivity)this.Activity).SetTitle(Resource.String.app_name);
+
+            sharedPreferences = this.Activity.GetSharedPreferences(BaseURL.MyPrefreance, FileCreationMode.Private);
+            latitude = sharedPreferences.GetString(BaseURL.LAT, null);
+            longitude = sharedPreferences.GetString(BaseURL.LONG, null);
+            address = sharedPreferences.GetString(BaseURL.ADDRESS, null);
+            city = sharedPreferences.GetString(BaseURL.CITY, null);
+
+            rv_items = (RecyclerView)view.FindViewById(Resource.Id.rv_home);
+            //home_list_banner = view.FindViewById(Resource.Id.home_img_slider);
+
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this.Activity, 3);
+            rv_items.SetLayoutManager(gridLayoutManager);
+            rv_items.SetItemAnimator(new DefaultItemAnimator());
+            rv_items.NestedScrollingEnabled = false;
+
+            rv_items.AddOnItemTouchListener(this);
+            return view;
+        }
+
+        public void OnClick(View v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool OnInterceptTouchEvent(RecyclerView recyclerView, MotionEvent @event)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnRequestDisallowInterceptTouchEvent(bool disallow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnTouchEvent(RecyclerView recyclerView, MotionEvent @event)
+        {
+            //string getid = category_modelList.get(position).getCat_id();
+
+            //Intent intent = new Intent(this.Activity, CategoryPage);
+            //intent.PutExtra("cat_id", getid);
+            //intent.PutExtra("title", category_modelList.get(position).getTitle());
+            //intent.PutExtra("image", category_modelList.get(position).getImage());
+            //StartActivity(intent);
+        }
+    }
+}

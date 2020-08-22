@@ -1,0 +1,152 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Android.Support.V7.App;
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Android.Support.V7.Widget;
+using com.resturant.Droid.Resturant.Adapter;
+using com.resturant.Droid.Model;
+using com.resturant.Droid.Resturant.utils;
+using Android.Net;
+using com.resturant.Droid.Resturant.Activities;
+
+namespace com.resturant.Droid.Resturant.Fragments
+{
+
+    public class CartFragment : Android.Support.V4.App.Fragment
+    {
+        Button btn_ShopNOw;
+        RecyclerView recyclerView;
+        LinearLayout ll_Checkout;
+        CartAdapter cartAdapter;
+        public static RelativeLayout noData, viewCart;
+        public static TextView totalItems;
+        public static TextView tv_total;
+
+        private List<CartModel> cartList = new List<CartModel>();
+        private DatabaseHandler db;
+        private Session_management sessionManagement;
+
+        public CartFragment()
+        {
+
+
+        }
+        public override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+        }
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container,
+                            Bundle savedInstanceState)
+        {
+            // Inflate the layout for this fragment
+            View view = inflater.Inflate(Resource.Layout.fragment_cart, container, false);
+            recyclerView = (RecyclerView)view.FindViewById(Resource.Id.recyclerCart);
+            btn_ShopNOw = (Button)view.FindViewById(Resource.Id.btn_ShopNOw);
+            viewCart = (RelativeLayout)view.FindViewById(Resource.Id.viewCartItems);
+            tv_total = (TextView)view.FindViewById(Resource.Id.txt_totalamount);
+            totalItems = (TextView)view.FindViewById(Resource.Id.txt_totalQuan);
+            noData = (RelativeLayout)view.FindViewById(Resource.Id.noData);
+            ((MainActivity)this.Activity).Title = (GetString(Resource.String.cart));
+            sessionManagement = new Session_management(Activity);
+            sessionManagement.cleardatetime();
+            db = new DatabaseHandler(Activity);
+
+            ll_Checkout = (LinearLayout)view.FindViewById(Resource.Id.ll_Checkout);
+            btn_ShopNOw.Click += delegate
+            {
+                Intent intent = new Intent(Activity, typeof(MainActivity));
+                StartActivity(intent);
+            };
+
+            ll_Checkout.Click += delegate
+            {
+                if (isOnline())
+                {
+                    if (sessionManagement.isLoggedIn())
+                    {
+
+
+                        if (db.getCartCount() == 0)
+                        {
+                            noData.Visibility = ViewStates.Visible;
+                            viewCart.Visibility = ViewStates.Gone;
+                        }
+                        else
+                        {
+                            Intent intent = new Intent(this.Activity, typeof(OrderSummary));
+                            StartActivity(intent);
+                        }
+                    }
+                    else
+                    {
+
+                        if (db.getCartCount() == 0)
+                        {
+                            noData.Visibility = ViewStates.Visible;
+                            viewCart.Visibility = ViewStates.Gone;
+                        }
+                        else
+                        {
+                            Intent intent = new Intent(this.Activity, typeof(OrderSummary));
+                            StartActivity(intent);
+                        }
+
+                    }
+                };
+            };
+
+            recyclerView.SetLayoutManager(new LinearLayoutManager(Activity));
+
+            db = new DatabaseHandler(Activity);
+
+            if (sessionManagement.isLoggedIn())
+            {
+
+                if (db.getCartCount() == 0)
+                {
+                    noData.Visibility = ViewStates.Visible;
+                    viewCart.Visibility = ViewStates.Gone;
+                }
+            }
+            else
+            {
+                if (db.getCartCount() == 0)
+                {
+                    noData.Visibility = ViewStates.Visible;
+                    viewCart.Visibility = ViewStates.Gone;
+                }
+            }
+
+            List<Dictionary<string, string>> map = db.getCartAll();
+
+            Cart_adapter adapter = new Cart_adapter(this.Activity, map);
+            recyclerView.SetAdapter(adapter);
+            adapter.NotifyDataSetChanged();
+
+            updateData();
+            return view;
+
+        }
+
+        public void updateData()
+        {
+            tv_total.Text = Resources.GetString(Resource.String.currency) + " " + db.getTotalAmount();
+            totalItems.Text = "" + db.getCartCount() + "  Total Items:";
+        }
+
+
+        private bool isOnline()
+        {
+            ConnectivityManager cm = (ConnectivityManager)this.Activity.GetSystemService(Context.ConnectivityService);
+
+            return cm.ActiveNetworkInfo != null && cm.ActiveNetworkInfo.IsConnected;
+        }
+    }
+}

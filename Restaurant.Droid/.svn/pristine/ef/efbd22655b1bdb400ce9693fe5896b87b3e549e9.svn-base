@@ -1,0 +1,240 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Android.App;
+using Android.Content;
+using Android.Database;
+using Android.Database.Sqlite;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Java.Util;
+
+namespace com.resturant.Droid.Resturant.utils
+{
+    public class DatabaseHandler : SQLiteOpenHelper
+    {
+        private static string DB_NAME = "demhynnjf";
+        private static int DB_VERSION = 1;
+        private SQLiteDatabase db;
+
+        public static string CART_TABLE = "cart";
+
+        public static string VARIENT_ID = "varient_id";
+
+        public static string COLUMN_QTY = "qty";
+
+        public static string COLUMN_IMAGE = "product_image";
+        public static string COLUMN_NAME = "product_name";
+        public static string COLUMN_PRICE = "price";
+        public static string COLUMN_REWARDS = "rewards";
+        public static string COLUMN_INCREAMENT = "increament";
+        public static string COLUMN_UNIT_VALUE = "unit_value";
+        public static string COLUMN_STOCK = "stock";
+        public static string COLUMN_TITLE = "title";
+
+        public DatabaseHandler(Context context) : base(context, DB_NAME, null, DB_VERSION)
+        {
+
+        }
+
+        public override void OnCreate(SQLiteDatabase db)
+        {
+            this.db = db;
+
+            string exe = "CREATE TABLE IF NOT EXISTS " + CART_TABLE
+                    + "(" + VARIENT_ID + " integer primary key, "
+                    + COLUMN_QTY + " DOUBLE NOT NULL,"
+                    + COLUMN_IMAGE + " TEXT NOT NULL, "
+                    + COLUMN_NAME + " TEXT NOT NULL, "
+                    + COLUMN_PRICE + " DOUBLE NOT NULL, "
+                    + COLUMN_UNIT_VALUE + " DOUBLE NOT NULL, "
+
+                    + COLUMN_REWARDS + " DOUBLE NOT NULL, "
+                    + COLUMN_INCREAMENT + " DOUBLE NOT NULL, "
+                    + COLUMN_STOCK + " DOUBLE NOT NULL, "
+                    + COLUMN_TITLE + " TEXT NOT NULL "
+                    + ")";
+
+            db.ExecSQL(exe);
+        }
+
+        public bool setCart(Dictionary<string, string> map, int Qty)
+        {
+            db = WritableDatabase;
+            if (isInCart(map.GetValueOrDefault(VARIENT_ID)))
+            {
+                db.ExecSQL("update " + CART_TABLE + " set " + COLUMN_QTY + " = '" + Qty + "' where " + VARIENT_ID + "=" + map.GetValueOrDefault(VARIENT_ID));
+                return false;
+            }
+            else
+            {
+                ContentValues values = new ContentValues();
+                values.Put(VARIENT_ID, map.GetValueOrDefault(VARIENT_ID));
+
+                values.Put(COLUMN_QTY, Qty);
+                values.Put(COLUMN_IMAGE, map.GetValueOrDefault(COLUMN_IMAGE));
+                values.Put(COLUMN_INCREAMENT, map.GetValueOrDefault(COLUMN_INCREAMENT));
+                values.Put(COLUMN_NAME, map.GetValueOrDefault(COLUMN_NAME));
+                values.Put(COLUMN_PRICE, map.GetValueOrDefault(COLUMN_PRICE));
+                values.Put(COLUMN_REWARDS, map.GetValueOrDefault(COLUMN_REWARDS));
+                values.Put(COLUMN_UNIT_VALUE, map.GetValueOrDefault(COLUMN_UNIT_VALUE));
+
+                values.Put(COLUMN_STOCK, map.GetValueOrDefault(COLUMN_STOCK));
+                values.Put(COLUMN_TITLE, map.GetValueOrDefault(COLUMN_TITLE));
+                db.Insert(CART_TABLE, null, values);
+                return true;
+            }
+        }
+
+        public bool isInCart(string id)
+        {
+            db = ReadableDatabase;
+            string qry = "Select *  from " + CART_TABLE + " where " + VARIENT_ID + " = " + id;
+            ICursor cursor = db.RawQuery(qry, null);
+            cursor.MoveToFirst();
+            if (cursor.Count > 0) return true;
+            return false;
+        }
+
+        public string getCartItemQty(String id)
+        {
+
+            db = ReadableDatabase;
+            string qry = "Select *  from " + CART_TABLE + " where " + VARIENT_ID + " = " + id;
+            ICursor cursor = db.RawQuery(qry, null);
+            cursor.MoveToFirst();
+            return cursor.GetString(cursor.GetColumnIndex(COLUMN_QTY));
+
+        }
+
+        public string getInCartItemQty(String id)
+        {
+            if (isInCart(id))
+            {
+                db =ReadableDatabase;
+                string qry = "Select *  from " + CART_TABLE + " where " + VARIENT_ID + " = " + id;
+                ICursor cursor = db.RawQuery(qry, null);
+                cursor.MoveToFirst();
+                return cursor.GetString(cursor.GetColumnIndex(COLUMN_QTY));
+            }
+            else
+            {
+                return "0.0";
+            }
+        }
+
+        public int getCartCount()
+        {
+            db =ReadableDatabase;
+            string qry = "Select *  from " + CART_TABLE;
+            ICursor cursor = db.RawQuery(qry, null);
+            return cursor.Count;
+        }
+
+        public string getTotalAmount()
+        {
+            db = ReadableDatabase;
+            string qry = "Select SUM(" + COLUMN_QTY + " * " + COLUMN_PRICE + ") as total_amount  from " + CART_TABLE;
+            ICursor cursor = db.RawQuery(qry, null);
+            cursor.MoveToFirst();
+            string total = cursor.GetString(cursor.GetColumnIndex("total_amount"));
+            if (total != null)
+            {
+
+                return double.Parse(total).ToString();
+            }
+            else
+            {
+                return "0";
+            }
+        }
+
+
+        public List<Dictionary<string, string>> getCartAll()
+        {
+            List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
+            db = ReadableDatabase;
+            String qry = "Select *  from " + CART_TABLE;
+            ICursor cursor = db.RawQuery(qry, null);
+            cursor.MoveToFirst();
+            for (int i = 0; i < cursor.Count; i++)
+            {
+                Dictionary<string, string> map = new Dictionary<string, string>();
+                map.Add(VARIENT_ID, cursor.GetString(cursor.GetColumnIndex(VARIENT_ID)));
+                map.Add(COLUMN_QTY, cursor.GetString(cursor.GetColumnIndex(COLUMN_QTY)));
+                map.Add(COLUMN_IMAGE, cursor.GetString(cursor.GetColumnIndex(COLUMN_IMAGE)));
+                map.Add(COLUMN_NAME, cursor.GetString(cursor.GetColumnIndex(COLUMN_NAME)));
+                map.Add(COLUMN_PRICE, cursor.GetString(cursor.GetColumnIndex(COLUMN_PRICE)));
+                map.Add(COLUMN_REWARDS, cursor.GetString(cursor.GetColumnIndex(COLUMN_REWARDS)));
+                map.Add(COLUMN_UNIT_VALUE, cursor.GetString(cursor.GetColumnIndex(COLUMN_UNIT_VALUE)));
+                map.Add(COLUMN_INCREAMENT, cursor.GetString(cursor.GetColumnIndex(COLUMN_INCREAMENT)));
+                map.Add(COLUMN_STOCK, cursor.GetString(cursor.GetColumnIndex(COLUMN_STOCK)));
+                map.Add(COLUMN_TITLE, cursor.GetString(cursor.GetColumnIndex(COLUMN_TITLE)));
+                list.Add(map);
+                cursor.MoveToNext();
+            }
+            return list;
+        }
+
+        public string getColumnRewards()
+        {
+            db = ReadableDatabase;
+            string qry = "SELECT rewards FROM " + CART_TABLE;
+            ICursor cursor = db.RawQuery(qry, null);
+            cursor.MoveToFirst();
+            string reward = cursor.GetString(cursor.GetColumnIndex("rewards"));
+            if (reward != null)
+            {
+
+                return reward;
+            }
+            else
+            {
+                return "0";
+            }
+        }
+
+        public string getFavConcatString()
+        {
+            db = ReadableDatabase;
+            string qry = "Select *  from " + CART_TABLE;
+            ICursor cursor = db.RawQuery(qry, null);
+            cursor.MoveToFirst();
+            string concate = "";
+            for (int i = 0; i < cursor.Count; i++)
+            {
+                if (concate == "")
+                {
+                    concate = cursor.GetString(cursor.GetColumnIndex(VARIENT_ID));
+                }
+                else
+                {
+                    concate = concate + "_" + cursor.GetString(cursor.GetColumnIndex(VARIENT_ID));
+                }
+                cursor.MoveToNext();
+            }
+            return concate;
+        }
+
+        public void clearCart()
+        {
+            db = ReadableDatabase;
+            db.ExecSQL("delete from " + CART_TABLE);
+        }
+
+        public void removeItemFromCart(String id)
+        {
+            db = ReadableDatabase;
+            db.ExecSQL("delete from " + CART_TABLE + " where " + VARIENT_ID + " = " + id);
+        }
+
+        public override void OnUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
